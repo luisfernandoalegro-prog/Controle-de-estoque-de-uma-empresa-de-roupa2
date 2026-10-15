@@ -1,4 +1,4 @@
-# Sistema de Controle de Estoque — Loja de Roupas (ModaStock)
+# Estoque de roupa
 
 > Este README e o **documento de visao** do projeto (entrega **AVA 1**) e, ao longo do curso,
 > tambem sera o manual tecnico de como executar o sistema.
