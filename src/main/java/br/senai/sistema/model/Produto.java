@@ -38,19 +38,27 @@ public class Produto {
     @Column(nullable = false)
     private Integer estoqueMinimo;
 
+    @Column(nullable = false)
+    private Integer saldo;
+
+    @Column(nullable = false, length = 10)
+    private String unidade; // Campo exigido pela base de dados existente
+
     @OneToMany(mappedBy = "produto", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<VariacaoProduto> variacoes;
 
     public Produto() {
     }
 
-    public Produto(String codigo, String nome, String descricao, BigDecimal precoCusto, BigDecimal precoVenda, Integer estoqueMinimo) {
+    public Produto(String codigo, String nome, String descricao, BigDecimal precoCusto, BigDecimal precoVenda, Integer estoqueMinimo, Integer saldo, String unidade) {
         this.codigo = codigo;
         this.nome = nome;
         this.descricao = descricao;
         this.precoCusto = precoCusto;
         this.precoVenda = precoVenda;
         this.estoqueMinimo = estoqueMinimo;
+        this.saldo = saldo;
+        this.unidade = unidade;
     }
 
     public Long getId() {
@@ -107,6 +115,22 @@ public class Produto {
 
     public void setEstoqueMinimo(Integer estoqueMinimo) {
         this.estoqueMinimo = estoqueMinimo;
+    }
+
+    public Integer getSaldo() {
+        return saldo;
+    }
+
+    public void setSaldo(Integer saldo) {
+        this.saldo = saldo;
+    }
+
+    public String getUnidade() {
+        return unidade;
+    }
+
+    public void setUnidade(String unidade) {
+        this.unidade = unidade;
     }
 
     public List<VariacaoProduto> getVariacoes() {

@@ -12,10 +12,6 @@ import br.senai.sistema.model.Usuario;
 import br.senai.sistema.repository.ProdutoRepository;
 import br.senai.sistema.repository.UsuarioRepository;
 
-/**
- * Carga inicial de dados: executa uma vez sempre que a aplicação sobe.
- * Só insere os dados se a tabela ainda estiver vazia (por isso não duplica).
- */
 @Component
 public class DadosIniciais implements CommandLineRunner {
 
@@ -40,10 +36,10 @@ public class DadosIniciais implements CommandLineRunner {
         }
 
         if (produtoRepository.count() == 0) {
-            // Ordem do construtor: codigo, nome, descricao, precoCusto, precoVenda, estoqueMinimo
-            Produto produto1 = new Produto("CAM-001", "Camiseta Básica Algodão", "Camiseta 100% algodão gola careca", new BigDecimal("25.00"), new BigDecimal("59.90"), 15);
-            Produto produto2 = new Produto("CAL-002", "Calça Jeans Slim", "Calça jeans masculina modelagem slim", new BigDecimal("70.00"), new BigDecimal("149.90"), 10);
-            Produto produto3 = new Produto("VES-003", "Vestido Midi Floral", "Vestido feminino estampado para o dia a dia", new BigDecimal("60.00"), new BigDecimal("129.90"), 8);
+            // Ordem: codigo, nome, descricao, precoCusto, precoVenda, estoqueMinimo, saldo, unidade
+            Produto produto1 = new Produto("CAM-001", "Camiseta Básica Algodão", "Camiseta 100% algodão gola careca", new BigDecimal("25.00"), new BigDecimal("59.90"), 15, 50, "UN");
+            Produto produto2 = new Produto("CAL-002", "Calça Jeans Slim", "Calça jeans masculina modelagem slim", new BigDecimal("70.00"), new BigDecimal("149.90"), 10, 30, "UN");
+            Produto produto3 = new Produto("VES-003", "Vestido Midi Floral", "Vestido feminino estampado para o dia a dia", new BigDecimal("60.00"), new BigDecimal("129.90"), 8, 20, "UN");
             
             produtoRepository.save(produto1);
             produtoRepository.save(produto2);
