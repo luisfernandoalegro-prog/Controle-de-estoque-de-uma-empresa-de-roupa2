@@ -6,12 +6,18 @@
 
 <main class="container py-4">
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <h1 class="h4 mb-0">Produtos</h1>
-        <span class="badge text-bg-secondary" th:text="${#lists.size(produtos)} + ' registro(s)'">0 registro(s)</span>
+        <h1 class="h4 mb-0">Produtos
+            <span class="badge text-bg-secondary align-middle" th:text="${#lists.size(produtos)} + ' registro(s)'">0 registro(s)</span>
+        </h1>
+        <a th:href="@{/produtos/novo}" class="btn btn-app"><i class="bi bi-plus-lg"></i> Novo produto</a>
     </div>
 
-    <!-- Mensagem quando ainda não há registros -->
-    <div th:if="${#lists.isEmpty(produtos)}" class="alert alert-info">Nenhum registro cadastrado.</div>
+    <div th:if="${mensagem}" class="alert alert-success alert-dismissible fade show" role="alert">
+        <span th:text="${mensagem}">Mensagem</span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
+    </div>
+
+    <div th:if="${#lists.isEmpty(produtos)}" class="alert alert-info">Nenhum registro encontrado.</div>
 
     <div class="card shadow-sm" th:unless="${#lists.isEmpty(produtos)}">
         <div class="table-responsive">
@@ -25,26 +31,35 @@
                     <th class="text-end">Preço de venda</th>
                     <th class="text-end">Estoque mínimo</th>
                     <th class="text-end">Saldo</th>
-                    <th>Localização</th> <!-- Localização colocada na última coluna -->
+                    <th>Localização</th>
+                    <th class="text-center" style="width: 180px;">Ações</th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each="produto : ${produtos}" 
+                <tr th:each="produto : ${produtos}"
                     th:classappend="${produto.saldo < produto.estoqueMinimo} ? 'table-danger' : ''">
                     <td th:text="${produto.codigo}">Código</td>
                     <td th:text="${produto.nome}">Nome</td>
                     <td th:text="${produto.unidade}">Unidade</td>
-                    <td class="text-end text-nowrap" th:text="${'R$ ' + #numbers.formatDecimal(produto.precoCusto, 1, 'POINT', 2, 'COMMA')}">R$ 0,00</td>
-                    <td class="text-end text-nowrap" th:text="${'R$ ' + #numbers.formatDecimal(produto.precoVenda, 1, 'POINT', 2, 'COMMA')}">R$ 0,00</td>
+                    <td class="text-end text-nowrap" th:text="${produto.precoCusto != null} ? ${'R$ ' + #numbers.formatDecimal(produto.precoCusto, 1, 'POINT', 2, 'COMMA')} : '-'">R$ 0,00</td>
+                    <td class="text-end text-nowrap" th:text="${produto.precoVenda != null} ? ${'R$ ' + #numbers.formatDecimal(produto.precoVenda, 1, 'POINT', 2, 'COMMA')} : '-'">R$ 0,00</td>
                     <td class="text-end" th:text="${produto.estoqueMinimo}">0</td>
                     <td class="text-end" th:text="${produto.saldo}">0</td>
                     <td th:text="${produto.localizacao}">Localização</td>
+                    <td class="text-center">
+                        <a th:href="@{/produtos/{id}/editar(id=${produto.id})}" class="btn btn-sm btn-outline-primary">
+                            <i class="bi bi-pencil"></i> Editar
+                        </a>
+                        <a th:href="@{/produtos/excluir/{id}(id=${produto.id})}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Tem certeza que deseja excluir este produto?');">
+                            <i class="bi bi-trash"></i> Excluir
+                        </a>
+                    </td>
                 </tr>
                 </tbody>
                 <tfoot class="table-light">
                 <tr>
-                    <td colspan="8" class="fw-bold text-end">
-                        Total de registros: <span th:text="${#lists.size(produtos)}">0</span>
+                    <td colspan="9" class="fw-bold text-end">
+                        Total de registos: <span th:text="${#lists.size(produtos)}">0</span>
                     </td>
                 </tr>
                 </tfoot>

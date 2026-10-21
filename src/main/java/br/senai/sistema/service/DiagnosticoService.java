@@ -71,6 +71,7 @@ public class DiagnosticoService {
         return itens;
     }
 
+    @SuppressWarnings("null")
     public boolean tudoOk(Map<String, Item> itens) {
         return itens.values().stream().allMatch(Item::ok);
     }
