@@ -1,4 +1,3 @@
-<input type="hidden" th:field="*{id}">
 <!DOCTYPE html>
 <html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{fragments/layout :: head('Produtos')}"></head>
@@ -29,7 +28,6 @@
                         <div class="invalid-feedback" th:if="${#fields.hasErrors('unidade')}" th:errors="*{unidade}">Erro</div>
                     </div>
 
-                    <!-- Preço de Custo e Preço de Venda (obrigatório, sem placeholder) -->
                     <div class="col-12">
                         <div class="row g-3">
                             <div class="col-md-6">
@@ -56,7 +54,6 @@
                         <div class="invalid-feedback" th:if="${#fields.hasErrors('saldo')}" th:errors="*{saldo}">Erro</div>
                     </div>
 
-                    <!-- Campo de Localização para o negócio de roupa -->
                     <div class="col-md-6">
                         <label class="form-label" for="localizacao">Localização</label>
                         <input type="text" id="localizacao" class="form-control" th:field="*{localizacao}" placeholder="ex: Corredor A, Prateleira 2" th:errorclass="is-invalid">

@@ -6,9 +6,11 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import br.senai.sistema.model.Categoria;
 import br.senai.sistema.model.Perfil;
 import br.senai.sistema.model.Produto;
 import br.senai.sistema.model.Usuario;
+import br.senai.sistema.repository.CategoriaRepository;
 import br.senai.sistema.repository.ProdutoRepository;
 import br.senai.sistema.repository.UsuarioRepository;
 
@@ -18,12 +20,14 @@ public class DadosIniciais implements CommandLineRunner {
     private final UsuarioRepository usuarioRepository;
     private final PasswordEncoder passwordEncoder;
     private final ProdutoRepository produtoRepository;
+    private final CategoriaRepository categoriaRepository;
 
     public DadosIniciais(UsuarioRepository usuarioRepository, PasswordEncoder passwordEncoder,
-                         ProdutoRepository produtoRepository) {
+                         ProdutoRepository produtoRepository, CategoriaRepository categoriaRepository) {
         this.usuarioRepository = usuarioRepository;
         this.passwordEncoder = passwordEncoder;
         this.produtoRepository = produtoRepository;
+        this.categoriaRepository = categoriaRepository;
     }
 
     @Override
@@ -35,7 +39,12 @@ public class DadosIniciais implements CommandLineRunner {
                     passwordEncoder.encode("operador123"), Perfil.OPERADOR));
         }
 
-        // Remove os produtos antigos e insere os novos com a localização preenchida
+        if (categoriaRepository.count() == 0) {
+            categoriaRepository.save(new Categoria("Feminino", "Roupas e acessórios femininos"));
+            categoriaRepository.save(new Categoria("Masculino", "Roupas e acessórios masculinos"));
+            categoriaRepository.save(new Categoria("Infantil", "Roupas e acessórios infantis"));
+        }
+
         produtoRepository.deleteAll();
 
         Produto produto1 = new Produto("CAM-001", "Camiseta Básica Algodão", "Camiseta 100% algodão gola careca", new BigDecimal("25.00"), new BigDecimal("59.90"), 15, 50, "UN", "Corredor A - Prateleira 1");

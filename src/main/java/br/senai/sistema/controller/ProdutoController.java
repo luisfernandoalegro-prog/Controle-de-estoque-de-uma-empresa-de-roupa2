@@ -59,7 +59,6 @@ public class ProdutoController {
         return "produtos/form";
     }
 
-    // ADICIONE ESTE MÉTODO PARA O EXCLUIR FUNCIONAR:
     @GetMapping("/excluir/{id}")
     public String excluir(@PathVariable Long id, RedirectAttributes atributos) {
         produtoService.excluir(id);
