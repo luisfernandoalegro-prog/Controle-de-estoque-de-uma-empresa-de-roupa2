@@ -21,12 +21,9 @@ public class ProdutoService {
         this.produtoRepository = produtoRepository;
     }
 
-   /** Lista todos os registros, em ordem alfabética. */
     public List<Produto> listarTodos() {
         return produtoRepository.findAll(Sort.by("nome"));
     }
-
-    
 
     /** Busca um registro pelo id. Se não existir, gera um erro com mensagem clara. */
     public Produto buscarPorId(Long id) {

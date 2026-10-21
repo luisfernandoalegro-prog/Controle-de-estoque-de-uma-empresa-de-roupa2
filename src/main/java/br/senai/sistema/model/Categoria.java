@@ -23,12 +23,18 @@ public class Categoria {
     @Size(max = 255, message = "A descrição deve ter no máximo 255 caracteres")
     private String descricao;
 
-    // Construtor vazio obrigatório para o JPA e frameworks
-    public Categoria() {
+    // Construtor vazio obrigatório para o JPA
+    public Categoria() {}
+
+    // Construtor com nome e descrição
+    public Categoria(String nome, String descricao) {
+        this.nome = nome;
+        this.descricao = descricao;
     }
 
-    // Construtor com argumentos
-    public Categoria(String nome, String descricao) {
+    // Construtor com ID, nome e descrição (necessário para o DadosIniciais)
+    public Categoria(Long id, String nome, String descricao) {
+        this.id = id;
         this.nome = nome;
         this.descricao = descricao;
     }

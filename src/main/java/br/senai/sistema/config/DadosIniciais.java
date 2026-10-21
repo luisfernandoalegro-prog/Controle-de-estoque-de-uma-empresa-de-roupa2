@@ -47,9 +47,9 @@ public class DadosIniciais implements CommandLineRunner {
 
         produtoRepository.deleteAll();
 
-        Produto produto1 = new Produto("CAM-001", "Camiseta Básica Algodão", "Camiseta 100% algodão gola careca", new BigDecimal("25.00"), new BigDecimal("59.90"), 15, 50, "UN", "Corredor A - Prateleira 1");
+        Produto produto1 = new Produto("CAM-001", "Camiseta Básica Algodão", "Camiseta 100% algodão gola", new BigDecimal("25.00"), new BigDecimal("59.90"), 15, 50, "UN", "Corredor A - Prateleira 1");
         Produto produto2 = new Produto("CAL-002", "Calça Jeans", "Calça jeans masculina modelagem", new BigDecimal("70.00"), new BigDecimal("149.90"), 10, 30, "UN", "Corredor B - Prateleira 2");
-        Produto produto3 = new Produto("VES-003", "Vestido ", "Vestido feminino estampado para o dia a dia", new BigDecimal("60.00"), new BigDecimal("129.90"), 8, 7, "UN", "Corredor C - Prateleira 3");
+        Produto produto3 = new Produto("VES-003", "Vestido ", "Vestido feminino estampado", new BigDecimal("60.00"), new BigDecimal("129.90"), 8, 7, "UN", "Corredor C - Prateleira 3");
         
         produtoRepository.save(produto1);
         produtoRepository.save(produto2);
