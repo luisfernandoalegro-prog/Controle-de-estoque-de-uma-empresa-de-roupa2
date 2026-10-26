@@ -1,10 +1,6 @@
 package br.senai.sistema.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -41,11 +37,14 @@ public class Produto {
 
     private String localizacao;
 
-    // Construtor vazio obrigatório para o Spring e formulários
+    // Relacionamento com Categoria (nullable = true permite que os dados iniciais entrem sem categoria)
+    @ManyToOne
+    @JoinColumn(name = "categoria_id", nullable = true)
+    private Categoria categoria;
+
     public Produto() {
     }
 
-    // Construtor com 9 argumentos exigido pelo DadosIniciais.java
     public Produto(String codigo, String nome, String unidade, BigDecimal precoCusto, BigDecimal precoVenda, Integer estoqueMinimo, Integer saldo, String localizacao, String campoExtra) {
         this.codigo = codigo;
         this.nome = nome;
@@ -57,75 +56,43 @@ public class Produto {
         this.localizacao = localizacao;
     }
 
-    public Long getId() {
-        return id;
+    // Métodos de compatibilidade com Movimentações (mapeiam a quantidade para o campo saldo)
+    public Integer getQuantidade() {
+        return saldo != null ? saldo : 0;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setQuantidade(Integer quantidade) {
+        this.saldo = quantidade;
     }
 
-    public String getCodigo() {
-        return codigo;
-    }
+    // Getters e Setters tradicionais
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-    public void setCodigo(String codigo) {
-        this.codigo = codigo;
-    }
+    public String getCodigo() { return codigo; }
+    public void setCodigo(String codigo) { this.codigo = codigo; }
 
-    public String getNome() {
-        return nome;
-    }
+    public String getNome() { return nome; }
+    public void setNome(String nome) { this.nome = nome; }
 
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
+    public String getUnidade() { return unidade; }
+    public void setUnidade(String unidade) { this.unidade = unidade; }
 
-    public String getUnidade() {
-        return unidade;
-    }
+    public BigDecimal getPrecoCusto() { return precoCusto; }
+    public void setPrecoCusto(BigDecimal precoCusto) { this.precoCusto = precoCusto; }
 
-    public void setUnidade(String unidade) {
-        this.unidade = unidade;
-    }
+    public BigDecimal getPrecoVenda() { return precoVenda; }
+    public void setPrecoVenda(BigDecimal precoVenda) { this.precoVenda = precoVenda; }
 
-    public BigDecimal getPrecoCusto() {
-        return precoCusto;
-    }
+    public Integer getEstoqueMinimo() { return estoqueMinimo; }
+    public void setEstoqueMinimo(Integer estoqueMinimo) { this.estoqueMinimo = estoqueMinimo; }
 
-    public void setPrecoCusto(BigDecimal precoCusto) {
-        this.precoCusto = precoCusto;
-    }
+    public Integer getSaldo() { return saldo; }
+    public void setSaldo(Integer saldo) { this.saldo = saldo; }
 
-    public BigDecimal getPrecoVenda() {
-        return precoVenda;
-    }
+    public String getLocalizacao() { return localizacao; }
+    public void setLocalizacao(String localizacao) { this.localizacao = localizacao; }
 
-    public void setPrecoVenda(BigDecimal precoVenda) {
-        this.precoVenda = precoVenda;
-    }
-
-    public Integer getEstoqueMinimo() {
-        return estoqueMinimo;
-    }
-
-    public void setEstoqueMinimo(Integer estoqueMinimo) {
-        this.estoqueMinimo = estoqueMinimo;
-    }
-
-    public Integer getSaldo() {
-        return saldo;
-    }
-
-    public void setSaldo(Integer saldo) {
-        this.saldo = saldo;
-    }
-
-    public String getLocalizacao() {
-        return localizacao;
-    }
-
-    public void setLocalizacao(String localizacao) {
-        this.localizacao = localizacao;
-    }
+    public Categoria getCategoria() { return categoria; }
+    public void setCategoria(Categoria categoria) { this.categoria = categoria; }
 }

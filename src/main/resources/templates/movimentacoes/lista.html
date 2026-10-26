@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Movimentações')}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: menu}"></nav>
+
+<main class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h1 class="h4 mb-0">Movimentações 
+            <span class="badge text-bg-secondary align-middle" th:text="${#lists.size(movimentacoes)} + ' registo(s)'">0 registo(s)</span>
+        </h1>
+        <a th:href="@{/movimentacoes/novo}" class="btn btn-primary"><i class="bi bi-plus-lg"></i> Nova movimentação</a>
+    </div>
+
+    <div th:if="${mensagem}" class="alert alert-success alert-dismissible fade show" role="alert">
+        <span th:text="${mensagem}">Mensagem</span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
+    </div>
+
+    <div th:if="${#lists.isEmpty(movimentacoes)}" class="alert alert-info">Nenhum registo encontrado.</div>
+
+    <div class="card shadow-sm" th:unless="${#lists.isEmpty(movimentacoes)}">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0 align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>Data</th>
+                        <th>Tipo</th>
+                        <th>Produto</th>
+                        <th>Unidade</th>
+                        <th>Quantidade</th>
+                        <th>Observação</th>
+                        <th class="text-end">Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="mov : ${movimentacoes}">
+                        <td th:text="${mov.data}">Data</td>
+                        <td th:text="${mov.tipo}">Tipo</td>
+                        <td th:text="${mov.produto.nome}">Produto</td>
+                        <td th:text="${mov.produto.unidade}">Unidade</td>
+                        <td th:text="${mov.quantidade}">Quantidade</td>
+                        <td th:text="${mov.observacao != null && mov.observacao != '' ? mov.observacao : '-'}">Observação</td>
+                        <td class="text-end text-nowrap">
+                            <a th:href="@{/movimentacoes/{id}/editar(id=${mov.id})}" class="btn btn-sm btn-outline-secondary me-1"><i class="bi bi-pencil"></i> Editar</a>
+                            <form th:action="@{/movimentacoes/{id}/excluir(id=${mov.id})}" method="post" class="d-inline"
+                                  onsubmit="return confirm('Confirma a exclusão deste registo?');">
+                                <button type="submit" class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i> Excluir</button>
+                            </form>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</main>
+
+<footer th:replace="~{fragments/layout :: rodape}"></footer>
+</body>
+</html>

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Registar Movimentação')}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: menu}"></nav>
+
+<main class="container py-4">
+    <h1 class="h4 mb-3">Nova Movimentação de Stock</h1>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <form th:action="@{/movimentacoes/salvar}" th:object="${movimentacao}" method="post" novalidate>
+                
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <label class="form-label" for="data">Data *</label>
+                        <input type="date" class="form-control" id="data" th:field="*{data}" th:errorclass="is-invalid">
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('data')}" th:errors="*{data}">Erro</div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="form-label" for="tipo">Tipo *</label>
+                        <select class="form-select" id="tipo" th:field="*{tipo}" th:errorclass="is-invalid">
+                            <option value="">Selecione...</option>
+                            <option value="ENTRADA">ENTRADA</option>
+                            <option value="SAIDA">SAÍDA</option>
+                        </select>
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('tipo')}" th:errors="*{tipo}">Erro</div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="form-label" for="quantidade">Quantidade *</label>
+                        <input type="number" class="form-control" id="quantidade" th:field="*{quantidade}" th:errorclass="is-invalid">
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('quantidade')}" th:errors="*{quantidade}">Erro</div>
+                    </div>
+
+                    <div class="col-md-12">
+                        <label class="form-label" for="produto">Produto *</label>
+                        <select class="form-select" id="produto" th:field="*{produto}" th:errorclass="is-invalid">
+                            <option value="">Selecione o produto...</option>
+                            <option th:each="p : ${produtos}" th:value="${p.id}" th:text="${p.nome}"></option>
+                        </select>
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('produto')}" th:errors="*{produto}">Erro</div>
+                    </div>
+
+                    <div class="col-12">
+                        <label class="form-label" for="observacao">Observação</label>
+                        <textarea class="form-control" id="observacao" rows="3" th:field="*{observacao}"></textarea>
+                    </div>
+                </div>
+                
+                <div class="mt-3 d-flex gap-2">
+                    <button type="submit" class="btn btn-primary"><i class="bi bi-check-lg"></i> Salvar</button>
+                    <a th:href="@{/movimentacoes}" class="btn btn-outline-secondary">Cancelar</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</main>
+
+<footer th:replace="~{fragments/layout :: rodape}"></footer>
+</body>
+</html>
