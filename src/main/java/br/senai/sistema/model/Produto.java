@@ -5,6 +5,8 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "produto")
@@ -37,12 +39,26 @@ public class Produto {
 
     private String localizacao;
 
-    // Relacionamento com Categoria (nullable = true permite que os dados iniciais entrem sem categoria)
     @ManyToOne
     @JoinColumn(name = "categoria_id", nullable = true)
     private Categoria categoria;
 
+    @OneToMany(mappedBy = "produto", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Movimentacao> movimentacoes = new ArrayList<>();
+
+    // Construtores
     public Produto() {
+    }
+
+    public Produto(String codigo, String nome, String unidade, BigDecimal precoCusto, BigDecimal precoVenda, Integer estoqueMinimo, Integer saldo, String localizacao) {
+        this.codigo = codigo;
+        this.nome = nome;
+        this.unidade = unidade;
+        this.precoCusto = precoCusto;
+        this.precoVenda = precoVenda;
+        this.estoqueMinimo = estoqueMinimo;
+        this.saldo = saldo;
+        this.localizacao = localizacao;
     }
 
     public Produto(String codigo, String nome, String unidade, BigDecimal precoCusto, BigDecimal precoVenda, Integer estoqueMinimo, Integer saldo, String localizacao, String campoExtra) {
@@ -56,7 +72,7 @@ public class Produto {
         this.localizacao = localizacao;
     }
 
-    // Métodos de compatibilidade com Movimentações (mapeiam a quantidade para o campo saldo)
+    // Métodos de compatibilidade com Movimentações
     public Integer getQuantidade() {
         return saldo != null ? saldo : 0;
     }
@@ -65,7 +81,7 @@ public class Produto {
         this.saldo = quantidade;
     }
 
-    // Getters e Setters tradicionais
+    // Getters e Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
@@ -95,4 +111,7 @@ public class Produto {
 
     public Categoria getCategoria() { return categoria; }
     public void setCategoria(Categoria categoria) { this.categoria = categoria; }
+
+    public List<Movimentacao> getMovimentacoes() { return movimentacoes; }
+    public void setMovimentacoes(List<Movimentacao> movimentacoes) { this.movimentacoes = movimentacoes; }
 }

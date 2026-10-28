@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
 
 @Entity
+@Table(name = "movimentacao")
 public class Movimentacao {
 
     @Id
@@ -15,8 +16,9 @@ public class Movimentacao {
     @NotNull(message = "A data é obrigatória")
     private LocalDate data = LocalDate.now();
 
+    @Enumerated(EnumType.STRING)
     @NotNull(message = "O tipo é obrigatório")
-    private String tipo; // "ENTRADA" ou "SAIDA"
+    private TipoMovimentacao tipo;
 
     @NotNull(message = "O produto é obrigatório")
     @ManyToOne
@@ -29,17 +31,25 @@ public class Movimentacao {
 
     private String observacao;
 
+    // Construtores
+    public Movimentacao() {}
+
     // Getters e Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
+
     public LocalDate getData() { return data; }
     public void setData(LocalDate data) { this.data = data; }
-    public String getTipo() { return tipo; }
-    public void setTipo(String tipo) { this.tipo = tipo; }
+
+    public TipoMovimentacao getTipo() { return tipo; }
+    public void setTipo(TipoMovimentacao tipo) { this.tipo = tipo; }
+
     public Produto getProduto() { return produto; }
     public void setProduto(Produto produto) { this.produto = produto; }
+
     public Integer getQuantidade() { return quantidade; }
     public void setQuantidade(Integer quantidade) { this.quantidade = quantidade; }
+
     public String getObservacao() { return observacao; }
     public void setObservacao(String observacao) { this.observacao = observacao; }
 }

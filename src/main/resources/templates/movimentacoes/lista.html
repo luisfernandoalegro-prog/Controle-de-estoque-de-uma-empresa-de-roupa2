@@ -7,10 +7,24 @@
 <main class="container py-4">
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h1 class="h4 mb-0">Movimentações 
-            <span class="badge text-bg-secondary align-middle" th:text="${#lists.size(movimentacoes)} + ' registo(s)'">0 registo(s)</span>
+            <span class="badge text-bg-secondary align-middle" th:text="${#lists.size(movimentacoes)} + ' registo(s)'">0</span>
         </h1>
         <a th:href="@{/movimentacoes/novo}" class="btn btn-primary"><i class="bi bi-plus-lg"></i> Nova movimentação</a>
     </div>
+
+    <!-- Formulário de Filtro por Tipo -->
+    <form method="get" th:action="@{/movimentacoes}" class="row g-2 mb-3">
+        <div class="col-auto">
+            <select name="tipo" class="form-select form-select-sm">
+                <option value="">Todas as situações</option>
+                <option th:each="t : ${tipos}" th:value="${t}" th:text="${t}" th:selected="${t == tipoSelecionado}"></option>
+            </select>
+        </div>
+        <div class="col-auto">
+            <button type="submit" class="btn btn-sm btn-outline-secondary">Filtrar</button>
+            <a th:href="@{/movimentacoes}" class="btn btn-sm btn-link">Limpar</a>
+        </div>
+    </form>
 
     <div th:if="${mensagem}" class="alert alert-success alert-dismissible fade show" role="alert">
         <span th:text="${mensagem}">Mensagem</span>
@@ -36,13 +50,16 @@
                 <tbody>
                     <tr th:each="mov : ${movimentacoes}">
                         <td th:text="${mov.data}">Data</td>
-                        <td th:text="${mov.tipo}">Tipo</td>
+                        <td>
+                            <span class="badge" 
+                                  th:classappend="${mov.tipo.name() == 'ENTRADA'} ? 'text-bg-success' : 'text-bg-danger'" 
+                                  th:text="${mov.tipo}">Tipo</span>
+                        </td>
                         <td th:text="${mov.produto.nome}">Produto</td>
                         <td th:text="${mov.produto.unidade}">Unidade</td>
                         <td th:text="${mov.quantidade}">Quantidade</td>
-                        <td th:text="${mov.observacao != null && mov.observacao != '' ? mov.observacao : '-'}">Observação</td>
+                        <td th:text="${mov.observacao != null && mov.observacao != '' ? mov.observacao : '-'}">Obs</td>
                         <td class="text-end text-nowrap">
-                            <a th:href="@{/movimentacoes/{id}/editar(id=${mov.id})}" class="btn btn-sm btn-outline-secondary me-1"><i class="bi bi-pencil"></i> Editar</a>
                             <form th:action="@{/movimentacoes/{id}/excluir(id=${mov.id})}" method="post" class="d-inline"
                                   onsubmit="return confirm('Confirma a exclusão deste registo?');">
                                 <button type="submit" class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i> Excluir</button>

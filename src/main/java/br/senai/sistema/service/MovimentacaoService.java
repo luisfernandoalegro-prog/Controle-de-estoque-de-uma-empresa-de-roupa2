@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import br.senai.sistema.model.Movimentacao;
 import br.senai.sistema.model.Produto;
+import br.senai.sistema.model.TipoMovimentacao;
 import br.senai.sistema.repository.MovimentacaoRepository;
 import br.senai.sistema.repository.ProdutoRepository;
 
@@ -25,18 +26,25 @@ public class MovimentacaoService {
         return movimentacaoRepository.findAll();
     }
 
+    public List<Movimentacao> buscarPorTipo(TipoMovimentacao tipo) {
+        if (tipo == null) {
+            return listarTodas();
+        }
+        return movimentacaoRepository.findByTipo(tipo);
+    }
+
     @Transactional
     public void salvar(Movimentacao movimentacao) {
         Produto produto = produtoRepository.findById(movimentacao.getProduto().getId())
-                .orElseThrow(() -> new IllegalArgumentException("Produto inválido"));
+                .orElseThrow(() -> new RegraNegocioException("Produto inválido selecionado."));
 
         int saldoAtual = produto.getSaldo() != null ? produto.getSaldo() : 0;
 
-        if ("ENTRADA".equalsIgnoreCase(movimentacao.getTipo())) {
+        if (movimentacao.getTipo() == TipoMovimentacao.ENTRADA) {
             produto.setSaldo(saldoAtual + movimentacao.getQuantidade());
-        } else if ("SAIDA".equalsIgnoreCase(movimentacao.getTipo())) {
+        } else if (movimentacao.getTipo() == TipoMovimentacao.SAIDA) {
             if (saldoAtual < movimentacao.getQuantidade()) {
-                throw new RuntimeException("Quantidade em stock insuficiente!");
+                throw new RegraNegocioException("Quantidade em stock insuficiente para esta saída!");
             }
             produto.setSaldo(saldoAtual - movimentacao.getQuantidade());
         }
@@ -52,14 +60,15 @@ public class MovimentacaoService {
     @Transactional
     public void excluir(Long id) {
         Movimentacao mov = movimentacaoRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Movimentação inválida"));
+                .orElseThrow(() -> new RegraNegocioException("Movimentação não encontrada."));
         
         Produto produto = mov.getProduto();
         int saldoAtual = produto.getSaldo() != null ? produto.getSaldo() : 0;
 
-        if ("ENTRADA".equalsIgnoreCase(mov.getTipo())) {
+        // Reverte a operação no estoque ao excluir
+        if (mov.getTipo() == TipoMovimentacao.ENTRADA) {
             produto.setSaldo(saldoAtual - mov.getQuantidade());
-        } else if ("SAIDA".equalsIgnoreCase(mov.getTipo())) {
+        } else if (mov.getTipo() == TipoMovimentacao.SAIDA) {
             produto.setSaldo(saldoAtual + mov.getQuantidade());
         }
         produtoRepository.save(produto);
