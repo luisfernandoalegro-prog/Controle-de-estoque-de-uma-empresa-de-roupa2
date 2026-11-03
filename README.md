@@ -128,3 +128,9 @@ classDiagram
     Produto "1" --> "*" VariacaoProduto : contem
     VariacaoProduto "1" --> "*" Movimentacao : registra
     Usuario "1" --> "*" Movimentacao : realiza
+    ## Usuários de Teste
+
+| Usuário | E-mail / Login | Senha | Perfil | Permissões |
+| :--- | :--- | :--- | :--- | :--- |
+| **Administrador** | `admin@sistema.com` | `admin123` | ADMIN | Acesso total (Cadastrar, editar, excluir e movimentar) |
+| **Luis Fernando** | `luis@sistema.com` | `user123` | OPERADOR | Apenas consulta e registro de movimentações |

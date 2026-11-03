@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head th:replace="~{fragments/layout :: head('Produtos')}"></head>
 <body>
 <nav th:replace="~{fragments/layout :: menu}"></nav>
@@ -9,7 +10,8 @@
         <h1 class="h4 mb-0">Produtos
             <span class="badge text-bg-secondary align-middle" th:text="${#lists.size(produtos)} + ' registro(s)'">0 registro(s)</span>
         </h1>
-        <a th:href="@{/produtos/novo}" class="btn btn-app"><i class="bi bi-plus-lg"></i> Novo produto</a>
+        <!-- Botão visível apenas para administradores -->
+        <a sec:authorize="hasRole('ADMIN')" th:href="@{/produtos/novo}" class="btn btn-primary"><i class="bi bi-plus-lg"></i> Novo produto</a>
     </div>
 
     <div th:if="${mensagem}" class="alert alert-success alert-dismissible fade show" role="alert">
@@ -32,7 +34,8 @@
                     <th class="text-end">Estoque mínimo</th>
                     <th class="text-end">Saldo</th>
                     <th>Localização</th>
-                    <th class="text-center" style="width: 180px;">Ações</th>
+                    <!-- Coluna de Ações visível apenas para administradores -->
+                    <th sec:authorize="hasRole('ADMIN')" class="text-center" style="width: 180px;">Ações</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -46,7 +49,8 @@
                     <td class="text-end" th:text="${produto.estoqueMinimo}">0</td>
                     <td class="text-end" th:text="${produto.saldo}">0</td>
                     <td th:text="${produto.localizacao}">Localização</td>
-                    <td class="text-center">
+                    <!-- Botões de Ação visíveis apenas para administradores -->
+                    <td sec:authorize="hasRole('ADMIN')" class="text-center text-nowrap">
                         <a th:href="@{/produtos/{id}/editar(id=${produto.id})}" class="btn btn-sm btn-outline-primary">
                             <i class="bi bi-pencil"></i> Editar
                         </a>
@@ -56,9 +60,9 @@
                     </td>
                 </tr>
                 </tbody>
-                <tfoot class="table-light">
+                <tfoot class="tag-light table-light">
                 <tr>
-                    <td colspan="9" class="fw-bold text-end">
+                    <td colspan="9" class="fw-bold text-end" th:attr="colspan=${#authorization.expression('hasRole(''ADMIN'')')} ? 9 : 8">
                         Total de registos: <span th:text="${#lists.size(produtos)}">0</span>
                     </td>
                 </tr>

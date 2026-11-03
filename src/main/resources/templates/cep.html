@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Consulta de CEP')}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: menu}"></nav>
+
+<main class="container py-4">
+    <h1 class="h4 mb-4">Consulta de CEP (ViaCEP)</h1>
+
+    <div class="card shadow-sm p-4 mb-4" style="max-width: 500px;">
+        <form method="get" th:action="@{/cep}">
+            <div class="mb-3">
+                <label class="form-label">Digite o CEP</label>
+                <input type="text" name="cep" class="form-control" th:value="${cepBuscado}" placeholder="Ex: 86010000" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Buscar</button>
+        </form>
+    </div>
+
+    <div th:if="${resultado != null}" class="card shadow-sm p-4" style="max-width: 500px;">
+        <h5 class="mb-3">Resultado da Consulta</h5>
+        <p><strong>Logradouro:</strong> <span th:text="${resultado.logradouro}">-</span></p>
+        <p><strong>Bairro:</strong> <span th:text="${resultado.bairro}">-</span></p>
+        <p><strong>Cidade:</strong> <span th:text="${resultado.localidade}">-</span></p>
+        <p><strong>Estado (UF):</strong> <span th:text="${resultado.uf}">-</span></p>
+    </div>
+</main>
+
+<footer th:replace="~{fragments/layout :: rodape}"></footer>
+</body>
+</html>
