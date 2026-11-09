@@ -1,50 +1,52 @@
 <!DOCTYPE html>
 <html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{fragments/layout :: head('Nova Movimentação')}"></head>
+<head th:replace="~{fragments/layout :: head('Registar Movimentação')}"></head>
 <body>
 <nav th:replace="~{fragments/layout :: menu}"></nav>
 
-<main class="container py-4">
-    <h1 class="h4 mb-3">Registar Movimentação</h1>
+<main class="container py-4" style="max-width: 600px;">
+    <h1 class="h3 mb-4" th:text="${movimentacao.id == null ? 'Registar Movimentação' : 'Editar Movimentação'}">Movimentação</h1>
 
-    <div th:if="${erro}" class="alert alert-danger" role="alert" th:text="${erro}">Erro</div>
+    <div class="card shadow-sm p-4">
+        <form th:action="@{/movimentacoes/salvar}" th:object="${movimentacao}" method="post">
+            <input type="hidden" th:field="*{id}">
 
-    <form th:action="@{/movimentacoes/salvar}" th:object="${movimentacao}" method="post" class="card p-4 shadow-sm">
-        
-        <div class="mb-3">
-            <label class="form-label">Tipo de Movimentação</label>
-            <select th:field="*{tipo}" class="form-select" th:errorclass="is-invalid">
-                <option value="">Selecione...</option>
-                <option th:each="t : ${tipos}" th:value="${t}" th:text="${t}"></option>
-            </select>
-            <div class="invalid-feedback" th:errors="*{tipo}"></div>
-        </div>
+            <div class="mb-3">
+                <label class="form-label">Tipo de Movimentação</label>
+                <select th:field="*{tipo}" class="form-select" required>
+                    <option value="">Selecione...</option>
+                    <option th:each="t : ${T(br.senai.sistema.model.TipoMovimentacao).values()}" 
+                            th:value="${t}" 
+                            th:text="${t == T(br.senai.sistema.model.TipoMovimentacao).ENTRADA ? 'Entrada' : 'Saída'}">
+                    </option>
+                </select>
+                <div class="invalid-feedback" th:if="${#fields.hasErrors('tipo')}" th:errors="*{tipo}">Erro no tipo</div>
+            </div>
 
-        <div class="mb-3">
-            <label class="form-label">Produto</label>
-            <select th:field="*{produto}" class="form-select" th:errorclass="is-invalid">
-                <option value="">Selecione o produto...</option>
-                <option th:each="p : ${produtos}" th:value="${p.id}" th:text="${p.nome}"></option>
-            </select>
-            <div class="invalid-feedback" th:errors="*{produto}"></div>
-        </div>
+            <div class="mb-3">
+                <label class="form-label">Produto</label>
+                <select th:field="*{produto}" class="form-select" required>
+                    <option value="">Selecione o produto...</option>
+                    <option th:each="prod : ${produtos}" th:value="${prod.id}" th:text="${prod.nome}"></option>
+                </select>
+            </div>
 
-        <div class="mb-3">
-            <label class="form-label">Quantidade</label>
-            <input type="number" th:field="*{quantidade}" class="form-control" th:errorclass="is-invalid">
-            <div class="invalid-feedback" th:errors="*{quantidade}"></div>
-        </div>
+            <div class="mb-3">
+                <label class="form-label">Quantidade</label>
+                <input type="number" th:field="*{quantidade}" class="form-control" min="1" required>
+            </div>
 
-        <div class="mb-3">
-            <label class="form-label">Observação</label>
-            <textarea th:field="*{observacao}" class="form-control" rows="2"></textarea>
-        </div>
+            <div class="mb-3">
+                <label class="form-label">Observação</label>
+                <textarea th:field="*{observacao}" class="form-control" rows="3" placeholder="Observações opcionais..."></textarea>
+            </div>
 
-        <div class="d-flex justify-content-end gap-2">
-            <a th:href="@{/movimentacoes}" class="btn btn-secondary">Cancelar</a>
-            <button type="submit" class="btn btn-primary">Guardar</button>
-        </div>
-    </form>
+            <div class="d-flex justify-content-end gap-2">
+                <a th:href="@{/movimentacoes}" class="btn btn-secondary">Cancelar</a>
+                <button type="submit" class="btn btn-primary">Guardar</button>
+            </div>
+        </form>
+    </div>
 </main>
 
 <footer th:replace="~{fragments/layout :: rodape}"></footer>

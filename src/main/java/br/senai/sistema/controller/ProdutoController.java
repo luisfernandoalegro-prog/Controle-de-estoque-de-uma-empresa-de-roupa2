@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import br.senai.sistema.model.Produto;
+import br.senai.sistema.service.CategoriaService;
 import br.senai.sistema.service.ProdutoService;
 import jakarta.validation.Valid;
 
@@ -20,9 +21,11 @@ import jakarta.validation.Valid;
 public class ProdutoController {
 
     private final ProdutoService produtoService;
+    private final CategoriaService categoriaService;
 
-    public ProdutoController(ProdutoService produtoService) {
+    public ProdutoController(ProdutoService produtoService, CategoriaService categoriaService) {
         this.produtoService = produtoService;
+        this.categoriaService = categoriaService;
     }
 
     @GetMapping
@@ -34,28 +37,32 @@ public class ProdutoController {
     @GetMapping("/novo")
     public String novo(Model model) {
         model.addAttribute("produto", new Produto());
+        model.addAttribute("categorias", categoriaService.listarTodas());
         return "produtos/form";
     }
 
     @PostMapping("/salvar")
     public String salvar(@Valid @ModelAttribute("produto") Produto produto, BindingResult resultado,
-                         RedirectAttributes atributos) {
+                         Model model, RedirectAttributes atributos) {
         if (resultado.hasErrors()) {
+            model.addAttribute("categorias", categoriaService.listarTodas());
             return "produtos/form";
         }
         try {
             produtoService.salvar(produto);
         } catch (DataIntegrityViolationException e) {
-            resultado.rejectValue("codigo", "duplicado", "Já existe um registro com este código.");
+            resultado.rejectValue("codigo", "duplicado", "Já existe um registo com este código.");
+            model.addAttribute("categorias", categoriaService.listarTodas());
             return "produtos/form";
         }
         atributos.addFlashAttribute("mensagem", "Produto salvo com sucesso.");
         return "redirect:/produtos";
     }
 
-    @GetMapping("/{id}/editar")
+    @GetMapping({"/editar/{id}", "/{id}/editar"})
     public String editar(@PathVariable Long id, Model model) {
-        model.addAttribute("produto", produtoService.buscarPorId(id));
+        model.addAttribute("produto", produtoService.buscarPorId(id).orElseThrow(() -> new IllegalArgumentException("ID inválido")));
+        model.addAttribute("categorias", categoriaService.listarTodas());
         return "produtos/form";
     }
 

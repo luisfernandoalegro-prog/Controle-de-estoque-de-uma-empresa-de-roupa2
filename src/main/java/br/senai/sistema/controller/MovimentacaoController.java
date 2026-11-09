@@ -3,14 +3,18 @@ package br.senai.sistema.controller;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import br.senai.sistema.model.Movimentacao;
 import br.senai.sistema.model.TipoMovimentacao;
 import br.senai.sistema.service.MovimentacaoService;
 import br.senai.sistema.service.ProdutoService;
-import br.senai.sistema.service.RegraNegocioException;
 import jakarta.validation.Valid;
 
 @Controller
@@ -28,8 +32,6 @@ public class MovimentacaoController {
     @GetMapping
     public String listar(@RequestParam(required = false) TipoMovimentacao tipo, Model model) {
         model.addAttribute("movimentacoes", movimentacaoService.buscarPorTipo(tipo));
-        model.addAttribute("tipos", TipoMovimentacao.values());
-        model.addAttribute("tipoSelecionado", tipo);
         return "movimentacoes/lista";
     }
 
@@ -37,38 +39,47 @@ public class MovimentacaoController {
     public String novo(Model model) {
         model.addAttribute("movimentacao", new Movimentacao());
         model.addAttribute("produtos", produtoService.listarTodos());
-        model.addAttribute("tipos", TipoMovimentacao.values());
         return "movimentacoes/form";
     }
 
+    // Suporta rotas de edição por /movimentacoes/editar/{id} ou /movimentacoes/{id}/editar
+    @GetMapping({"/editar/{id}", "/{id}/editar"})
+    public String editar(@PathVariable Long id, Model model, RedirectAttributes atributos) {
+        return movimentacaoService.buscarPorId(id)
+                .map(mov -> {
+                    model.addAttribute("movimentacao", mov);
+                    model.addAttribute("produtos", produtoService.listarTodos());
+                    return "movimentacoes/form";
+                })
+                .orElseGet(() -> {
+                    atributos.addFlashAttribute("erro", "Movimentação não encontrada.");
+                    return "redirect:/movimentacoes";
+                });
+    }
+
     @PostMapping("/salvar")
-    public String salvar(@Valid @ModelAttribute Movimentacao movimentacao, BindingResult result, Model model, RedirectAttributes attributes) {
-        if (result.hasErrors()) {
+    public String salvar(@Valid @ModelAttribute("movimentacao") Movimentacao movimentacao, BindingResult resultado,
+                         Model model, RedirectAttributes atributos) {
+        if (resultado.hasErrors()) {
             model.addAttribute("produtos", produtoService.listarTodos());
-            model.addAttribute("tipos", TipoMovimentacao.values());
             return "movimentacoes/form";
         }
-
         try {
             movimentacaoService.salvar(movimentacao);
-            attributes.addFlashAttribute("mensagem", "Movimentação registada com sucesso!");
-        } catch (RegraNegocioException e) {
-            model.addAttribute("produtos", produtoService.listarTodos());
-            model.addAttribute("tipos", TipoMovimentacao.values());
-            model.addAttribute("erro", e.getMessage());
-            return "movimentacoes/form";
+            atributos.addFlashAttribute("mensagem", "Movimentação salva com sucesso.");
+        } catch (Exception e) {
+            atributos.addFlashAttribute("erro", e.getMessage());
         }
-
         return "redirect:/movimentacoes";
     }
 
-    @PostMapping("/{id}/excluir")
-    public String excluir(@PathVariable Long id, RedirectAttributes attributes) {
+    @GetMapping("/excluir/{id}")
+    public String excluir(@PathVariable Long id, RedirectAttributes atributos) {
         try {
             movimentacaoService.excluir(id);
-            attributes.addFlashAttribute("mensagem", "Movimentação excluída com sucesso!");
+            atributos.addFlashAttribute("mensagem", "Movimentação excluída e stock revertido com sucesso.");
         } catch (Exception e) {
-            attributes.addFlashAttribute("mensagem", "Erro ao excluir movimentação.");
+            atributos.addFlashAttribute("erro", e.getMessage());
         }
         return "redirect:/movimentacoes";
     }

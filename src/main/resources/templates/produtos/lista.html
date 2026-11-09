@@ -1,72 +1,63 @@
 <!DOCTYPE html>
-<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{fragments/layout :: head('Produtos')}"></head>
 <body>
 <nav th:replace="~{fragments/layout :: menu}"></nav>
 
 <main class="container py-4">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h1 class="h4 mb-0">Produtos
-            <span class="badge text-bg-secondary align-middle" th:text="${#lists.size(produtos)} + ' registro(s)'">0 registro(s)</span>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h3 mb-0">
+            Produtos 
+            <span class="badge text-bg-secondary fs-6 align-middle" th:text="${produtos != null ? produtos.size() : 0} + ' registo(s)'">0 registo(s)</span>
         </h1>
-        <!-- Botão visível apenas para administradores -->
-        <a sec:authorize="hasRole('ADMIN')" th:href="@{/produtos/novo}" class="btn btn-primary"><i class="bi bi-plus-lg"></i> Novo produto</a>
+        <a th:href="@{/produtos/novo}" class="btn btn-primary">
+            <i class="bi bi-plus-lg me-1"></i> Novo produto
+        </a>
     </div>
 
-    <div th:if="${mensagem}" class="alert alert-success alert-dismissible fade show" role="alert">
-        <span th:text="${mensagem}">Mensagem</span>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
-    </div>
-
-    <div th:if="${#lists.isEmpty(produtos)}" class="alert alert-info">Nenhum registro encontrado.</div>
-
-    <div class="card shadow-sm" th:unless="${#lists.isEmpty(produtos)}">
+    <!-- Tabela de Produtos -->
+    <div class="card shadow-sm">
         <div class="table-responsive">
-            <table class="table table-hover mb-0 align-middle">
+            <table class="table table-hover align-middle mb-0">
                 <thead class="table-light">
-                <tr>
-                    <th>Código</th>
-                    <th>Nome</th>
-                    <th>Unidade</th>
-                    <th class="text-end">Preço de custo</th>
-                    <th class="text-end">Preço de venda</th>
-                    <th class="text-end">Estoque mínimo</th>
-                    <th class="text-end">Saldo</th>
-                    <th>Localização</th>
-                    <!-- Coluna de Ações visível apenas para administradores -->
-                    <th sec:authorize="hasRole('ADMIN')" class="text-center" style="width: 180px;">Ações</th>
-                </tr>
+                    <tr>
+                        <th class="ps-3">Código</th>
+                        <th>Nome</th>
+                        <th>Categoria</th>
+                        <th>Unidade</th>
+                        <th>Custo</th>
+                        <th>Preço Venda</th>
+                        <th>Estoque</th>
+                        <th>Mínimo</th>
+                        <th>Localização</th>
+                        <th class="text-end pe-3" style="width: 180px;">Ações</th>
+                    </tr>
                 </thead>
                 <tbody>
-                <tr th:each="produto : ${produtos}"
-                    th:classappend="${produto.saldo < produto.estoqueMinimo} ? 'table-danger' : ''">
-                    <td th:text="${produto.codigo}">Código</td>
-                    <td th:text="${produto.nome}">Nome</td>
-                    <td th:text="${produto.unidade}">Unidade</td>
-                    <td class="text-end text-nowrap" th:text="${produto.precoCusto != null} ? ${'R$ ' + #numbers.formatDecimal(produto.precoCusto, 1, 'POINT', 2, 'COMMA')} : '-'">R$ 0,00</td>
-                    <td class="text-end text-nowrap" th:text="${produto.precoVenda != null} ? ${'R$ ' + #numbers.formatDecimal(produto.precoVenda, 1, 'POINT', 2, 'COMMA')} : '-'">R$ 0,00</td>
-                    <td class="text-end" th:text="${produto.estoqueMinimo}">0</td>
-                    <td class="text-end" th:text="${produto.saldo}">0</td>
-                    <td th:text="${produto.localizacao}">Localização</td>
-                    <!-- Botões de Ação visíveis apenas para administradores -->
-                    <td sec:authorize="hasRole('ADMIN')" class="text-center text-nowrap">
-                        <a th:href="@{/produtos/{id}/editar(id=${produto.id})}" class="btn btn-sm btn-outline-primary">
-                            <i class="bi bi-pencil"></i> Editar
-                        </a>
-                        <a th:href="@{/produtos/excluir/{id}(id=${produto.id})}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Tem certeza que deseja excluir este produto?');">
-                            <i class="bi bi-trash"></i> Excluir
-                        </a>
-                    </td>
-                </tr>
+                    <!-- A linha inteira fica vermelha (table-danger) se o estoque for menor que o mínimo -->
+                    <tr th:each="p : ${produtos}" th:classappend="${p.saldo != null and p.estoqueMinimo != null and p.saldo < p.estoqueMinimo} ? 'table-danger' : ''">
+                        <td class="ps-3 fw-semibold" th:text="${p.codigo}">001</td>
+                        <td th:text="${p.nome}">Nome</td>
+                        <td th:text="${p.categoria != null ? p.categoria.nome : 'Sem Categoria'}">Categoria</td>
+                        <td th:text="${p.unidade}">UN</td>
+                        <td th:text="${p.precoCusto != null ? 'R$ ' + #numbers.formatDecimal(p.precoCusto, 1, 'COMMA', 2, 'POINT') : 'R$ 0,00'}">R$ 0,00</td>
+                        <td th:text="${p.precoVenda != null ? 'R$ ' + #numbers.formatDecimal(p.precoVenda, 1, 'COMMA', 2, 'POINT') : 'R$ 0,00'}">R$ 0,00</td>
+                        <td th:text="${p.saldo != null ? p.saldo : 0}">0</td>
+                        <td th:text="${p.estoqueMinimo}">0</td>
+                        <td th:text="${p.localizacao}">Local</td>
+                        <td class="text-end pe-3">
+                            <a th:href="@{/produtos/editar/{id}(id=${p.id})}" class="btn btn-sm btn-outline-secondary me-1">
+                                <i class="bi bi-pencil"></i> Editar
+                            </a>
+                            <a th:href="@{/produtos/excluir/{id}(id=${p.id})}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Tem certeza que deseja excluir?')">
+                                <i class="bi bi-trash"></i> Excluir
+                            </a>
+                        </td>
+                    </tr>
+                    <tr th:if="${produtos == null or produtos.empty}">
+                        <td colspan="10" class="text-center py-4 text-muted">Nenhum produto encontrado.</td>
+                    </tr>
                 </tbody>
-                <tfoot class="tag-light table-light">
-                <tr>
-                    <td colspan="9" class="fw-bold text-end" th:attr="colspan=${#authorization.expression('hasRole(''ADMIN'')')} ? 9 : 8">
-                        Total de registos: <span th:text="${#lists.size(produtos)}">0</span>
-                    </td>
-                </tr>
-                </tfoot>
             </table>
         </div>
     </div>

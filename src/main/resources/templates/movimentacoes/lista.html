@@ -5,66 +5,63 @@
 <nav th:replace="~{fragments/layout :: menu}"></nav>
 
 <main class="container py-4">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h1 class="h4 mb-0">Movimentações 
-            <span class="badge text-bg-secondary align-middle" th:text="${#lists.size(movimentacoes)} + ' registo(s)'">0</span>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h3 mb-0">
+            Movimentações 
+            <span class="badge text-bg-secondary fs-6 align-middle" th:text="${movimentacoes.size} + ' registo(s)'">0 registo(s)</span>
         </h1>
-        <a th:href="@{/movimentacoes/novo}" class="btn btn-primary"><i class="bi bi-plus-lg"></i> Nova movimentação</a>
+        <a th:href="@{/movimentacoes/novo}" class="btn btn-primary">
+            <i class="bi bi-plus-lg me-1"></i> Nova movimentação
+        </a>
     </div>
 
-    <!-- Formulário de Filtro por Tipo -->
-    <form method="get" th:action="@{/movimentacoes}" class="row g-2 mb-3">
-        <div class="col-auto">
-            <select name="tipo" class="form-select form-select-sm">
-                <option value="">Todas as situações</option>
-                <option th:each="t : ${tipos}" th:value="${t}" th:text="${t}" th:selected="${t == tipoSelecionado}"></option>
+    <!-- Filtro por Tipo de Movimentação (Entrada/Saída) -->
+    <form method="get" th:action="@{/movimentacoes}" class="row g-2 mb-4">
+        <div class="col-md-4">
+            <select name="tipo" class="form-select" onchange="this.form.submit()">
+                <option value="">Todos os tipos</option>
+                <option value="ENTRADA" th:selected="${param.tipo != null and param.tipo[0] == 'ENTRADA'}">Entrada</option>
+                <option value="SAIDA" th:selected="${param.tipo != null and param.tipo[0] == 'SAIDA'}">Saída</option>
             </select>
-        </div>
-        <div class="col-auto">
-            <button type="submit" class="btn btn-sm btn-outline-secondary">Filtrar</button>
-            <a th:href="@{/movimentacoes}" class="btn btn-sm btn-link">Limpar</a>
         </div>
     </form>
 
-    <div th:if="${mensagem}" class="alert alert-success alert-dismissible fade show" role="alert">
-        <span th:text="${mensagem}">Mensagem</span>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
-    </div>
-
-    <div th:if="${#lists.isEmpty(movimentacoes)}" class="alert alert-info">Nenhum registo encontrado.</div>
-
-    <div class="card shadow-sm" th:unless="${#lists.isEmpty(movimentacoes)}">
+    <!-- Tabela de Movimentações -->
+    <div class="card shadow-sm">
         <div class="table-responsive">
-            <table class="table table-hover mb-0 align-middle">
+            <table class="table table-hover align-middle mb-0">
                 <thead class="table-light">
                     <tr>
-                        <th>Data</th>
-                        <th>Tipo</th>
+                        <th class="ps-3">ID</th>
                         <th>Produto</th>
-                        <th>Unidade</th>
+                        <th>Tipo</th>
                         <th>Quantidade</th>
-                        <th>Observação</th>
-                        <th class="text-end">Ações</th>
+                        <th>Data</th>
+                        <th class="text-end pe-3" style="width: 200px;">Ações</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr th:each="mov : ${movimentacoes}">
-                        <td th:text="${mov.data}">Data</td>
+                    <tr th:each="m : ${movimentacoes}">
+                        <td class="ps-3 fw-semibold" th:text="${m.id}">1</td>
+                        <td th:text="${m.produto != null ? m.produto.nome : 'Produto Removido'}">Nome do Produto</td>
                         <td>
                             <span class="badge" 
-                                  th:classappend="${mov.tipo.name() == 'ENTRADA'} ? 'text-bg-success' : 'text-bg-danger'" 
-                                  th:text="${mov.tipo}">Tipo</span>
+                                  th:classappend="${m.tipo.name() == 'ENTRADA'} ? 'text-bg-success' : 'text-bg-warning'" 
+                                  th:text="${m.tipo}">ENTRADA</span>
                         </td>
-                        <td th:text="${mov.produto.nome}">Produto</td>
-                        <td th:text="${mov.produto.unidade}">Unidade</td>
-                        <td th:text="${mov.quantidade}">Quantidade</td>
-                        <td th:text="${mov.observacao != null && mov.observacao != '' ? mov.observacao : '-'}">Obs</td>
-                        <td class="text-end text-nowrap">
-                            <form th:action="@{/movimentacoes/{id}/excluir(id=${mov.id})}" method="post" class="d-inline"
-                                  onsubmit="return confirm('Confirma a exclusão deste registo?');">
-                                <button type="submit" class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i> Excluir</button>
-                            </form>
+                        <td class="fw-bold" th:text="${m.quantidade}">0</td>
+                        <td th:text="${m.data != null ? #temporals.format(m.data, 'dd/MM/yyyy HH:mm') : '-'}">-</td>
+                        <td class="text-end pe-3">
+                            <a th:href="@{/movimentacoes/editar/{id}(id=${m.id})}" class="btn btn-sm btn-outline-secondary me-1">
+                                <i class="bi bi-pencil"></i> Editar
+                            </a>
+                            <a th:href="@{/movimentacoes/excluir/{id}(id=${m.id})}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Tem certeza que deseja excluir esta movimentação? O saldo do stock será revertido.')">
+                                <i class="bi bi-trash"></i> Excluir
+                            </a>
                         </td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(movimentacoes)}">
+                        <td colspan="6" class="text-center py-4 text-muted">Nenhuma movimentação registada.</td>
                     </tr>
                 </tbody>
             </table>
