@@ -12,12 +12,8 @@ import org.springframework.security.web.SecurityFilterChain;
 /**
  * Configuração de segurança (login e permissões).
  *
- * ESTADO INICIAL: DESLIGADA. Até o Encontro 7 todas as páginas ficam liberadas,
- * para você se concentrar no desenvolvimento das funcionalidades.
- *
- * Para LIGAR a segurança (Encontro 7), altere em application.yml:
- *     app: seguranca: ativa: true
- * e ajuste as regras do bloco "if (ativa)" para as páginas do seu sistema.
+ * Para LIGAR a segurança (Encontro 7/AVA 4), altere em application.yml:
+ *   app: seguranca: ativa: true
  */
 @Configuration
 public class SecurityConfig {
@@ -33,8 +29,13 @@ public class SecurityConfig {
                     // Arquivos públicos e páginas que não exigem login
                     .requestMatchers("/css/**", "/js/**", "/img/**", "/login", "/diagnostico").permitAll()
                     .requestMatchers(PathRequest.toH2Console()).permitAll()
-                    // Exemplo de página restrita a um perfil (ajuste no Encontro 7)
-                    .requestMatchers("/usuarios/**").hasRole("ADMIN")
+                    
+                    // Rotas estritamente restritas ao perfil ADMIN (Excluir, Cadastrar, Editar e Gestão de Usuários)
+                    .requestMatchers("/usuarios/**", "/produtos/novo", "/produtos/salvar", "/produtos/excluir/**").hasRole("ADMIN")
+                    
+                    // Rotas partilhadas que Admin e Operador podem aceder (Listagens, Painel, Movimentações)
+                    .requestMatchers("/produtos", "/produtos/detalhes/**", "/painel", "/movimentacoes/**").hasAnyRole("ADMIN", "OPERADOR")
+                    
                     // Todo o resto exige estar logado
                     .anyRequest().authenticated());
         } else {
@@ -46,7 +47,7 @@ public class SecurityConfig {
             // Página de login personalizada (templates/login.html)
             .formLogin(form -> form
                     .loginPage("/login")
-                    .defaultSuccessUrl("/", true)
+                    .defaultSuccessUrl("/painel", true)
                     .permitAll())
             .logout(logout -> logout
                     .logoutSuccessUrl("/login?saiu")
