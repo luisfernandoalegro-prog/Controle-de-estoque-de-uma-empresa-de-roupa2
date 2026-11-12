@@ -23,6 +23,26 @@ public class InicioController {
     @GetMapping("/")
     public String inicio(Model model) {
         model.addAttribute("indicadores", painelService.getIndicadores());
+        model.addAttribute("totalProdutos", painelService.getTotalProdutos());
+        model.addAttribute("produtosAbaixoMinimoCount", painelService.getProdutosAbaixoMinimoCount());
+        model.addAttribute("produtosAbaixoMinimo", painelService.getProdutosAbaixoMinimo());
+        model.addAttribute("totalEntradas", painelService.getTotalEntradas());
+        model.addAttribute("totalSaidas", painelService.getTotalSaidas());
+        model.addAttribute("valorTotalEstoque", painelService.getValorTotalEstoque());
+        model.addAttribute("statusSaudeEstoque", painelService.getStatusSaudeEstoque()); // DIFERENCIAL
+        return "index";
+    }
+
+    @GetMapping("/painel")
+    public String painel(Model model) {
+        model.addAttribute("indicadores", painelService.getIndicadores());
+        model.addAttribute("totalProdutos", painelService.getTotalProdutos());
+        model.addAttribute("produtosAbaixoMinimoCount", painelService.getProdutosAbaixoMinimoCount());
+        model.addAttribute("produtosAbaixoMinimo", painelService.getProdutosAbaixoMinimo());
+        model.addAttribute("totalEntradas", painelService.getTotalEntradas());
+        model.addAttribute("totalSaidas", painelService.getTotalSaidas());
+        model.addAttribute("valorTotalEstoque", painelService.getValorTotalEstoque());
+        model.addAttribute("statusSaudeEstoque", painelService.getStatusSaudeEstoque()); // DIFERENCIAL
         return "index";
     }
 

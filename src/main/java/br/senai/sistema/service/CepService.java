@@ -19,7 +19,7 @@ public class CepService {
     // Classe auxiliar para mapear a resposta do ViaCEP
     public static class CepResponse {
         private String cep;
-        private String logradouro;
+        private String rua;
         private String bairro;
         private String localidade;
         private String uf;
@@ -28,8 +28,8 @@ public class CepService {
         public String getCep() { return cep; }
         public void setCep(String cep) { this.cep = cep; }
 
-        public String getLogradouro() { return logradouro; }
-        public void setLogradouro(String logradouro) { this.logradouro = logradouro; }
+        public String getLogradouro() { return rua; }
+        public void setLogradouro(String rua) { this.rua = rua; }
 
         public String getBairro() { return bairro; }
         public void setBairro(String bairro) { this.bairro = bairro; }

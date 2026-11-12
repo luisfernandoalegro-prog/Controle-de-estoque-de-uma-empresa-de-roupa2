@@ -67,10 +67,13 @@ public class MovimentacaoController {
         try {
             movimentacaoService.salvar(movimentacao);
             atributos.addFlashAttribute("mensagem", "Movimentação salva com sucesso.");
+            return "redirect:/movimentacoes";
         } catch (Exception e) {
-            atributos.addFlashAttribute("erro", e.getMessage());
+            // Mantém na mesma página do formulário e exibe a mensagem de erro exata (ex: saldo insuficiente)
+            model.addAttribute("erro", e.getMessage());
+            model.addAttribute("produtos", produtoService.listarTodos());
+            return "movimentacoes/form";
         }
-        return "redirect:/movimentacoes";
     }
 
     @GetMapping("/excluir/{id}")

@@ -44,7 +44,7 @@ public class MovimentacaoService {
             produto.setSaldo(saldoAtual + movimentacao.getQuantidade());
         } else if (movimentacao.getTipo() == TipoMovimentacao.SAIDA) {
             if (saldoAtual < movimentacao.getQuantidade()) {
-                throw new RegraNegocioException("Quantidade em stock insuficiente para esta saída!");
+                throw new RegraNegocioException("Quantidade em estoque insuficiente para esta saída!");
             }
             produto.setSaldo(saldoAtual - movimentacao.getQuantidade());
         }

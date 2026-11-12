@@ -1,24 +1,134 @@
 <!DOCTYPE html>
 <html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{fragments/layout :: head('Painel Principal')}"></head>
+<head th:replace="~{fragments/layout :: head('Painel')}"></head>
 <body>
-<nav th:replace="~{fragments/layout :: menu}"></nav>
 
-<main class="container py-4">
-    <h1 class="h4 mb-4">Painel de Controlo do Estoque</h1>
+    <nav th:replace="~{fragments/layout :: menu}"></nav>
 
-    <div class="row row-cols-1 row-cols-md-2 row-cols-xl-4 g-4 mb-4">
-        <div class="col" th:each="ind : ${indicadores}">
-            <div class="card shadow-sm h-100 border-start border-4" th:classappend="'border-' + ${ind.cor}">
-                <div class="card-body">
-                    <h6 class="text-muted text-uppercase fs-7 mb-1" th:text="${ind.titulo}">Título</h6>
-                    <h2 class="fw-bold mb-0" th:text="${ind.valor}">0</h2>
+    <div class="container my-4">
+        
+        <!-- Cabeçalho do Painel -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>Painel</h2>
+            <span class="text-muted small">Visão geral do sistema RoupaSenai</span>
+        </div>
+
+        <!-- 4 Cartões de Indicadores -->
+        <div class="row g-3 mb-4">
+            <!-- 1. Produtos -->
+            <div class="col-md-3">
+                <div class="card shadow-sm border-start border-primary border-4">
+                    <div class="card-body">
+                        <h6 class="text-muted">Produtos</h6>
+                        <h3 class="fw-bold" th:text="${totalProdutos}">0</h3>
+                        <small class="text-muted">cadastrados</small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. Abaixo do mínimo -->
+            <div class="col-md-3">
+                <div class="card shadow-sm border-start border-danger border-4">
+                    <div class="card-body">
+                        <h6 class="text-muted">Abaixo do mínimo</h6>
+                        <h3 class="fw-bold text-danger" th:text="${produtosAbaixoMinimoCount}">0</h3>
+                        <small class="text-muted">precisam de reposição</small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. Movimentações -->
+            <div class="col-md-3">
+                <div class="card shadow-sm border-start border-success border-4">
+                    <div class="card-body">
+                        <h6 class="text-muted">Movimentações do mês</h6>
+                        <h3 class="fw-bold" th:text="${totalEntradas + totalSaidas}">0</h3>
+                        <small class="text-muted">entradas e saídas</small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4. Valor em estoque -->
+            <div class="col-md-3">
+                <div class="card shadow-sm border-start border-warning border-4">
+                    <div class="card-body">
+                        <h6 class="text-muted">Valor em estoque</h6>
+                        <h3 class="fw-bold" th:text="'R$ ' + ${#numbers.formatDecimal(valorTotalEstoque, 1, 'COMMA', 2, 'POINT')}">R$ 0,00</h3>
+                        <small class="text-muted">saldo × preço de custo</small>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-</main>
 
-<footer th:replace="~{fragments/layout :: rodape}"></footer>
+        <!-- Secção Inferior: Tabela de Atenção e Gráfico -->
+        <div class="row g-4">
+            <!-- Tabela de Produtos abaixo do mínimo -->
+            <div class="col-lg-7">
+                <div class="card shadow-sm h-100">
+                    <div class="card-header bg-white fw-bold">
+                        <i class="bi bi-exclamation-triangle-fill text-warning me-1"></i> Produtos abaixo do estoque mínimo
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0 align-middle">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Código</th>
+                                        <th>Produto</th>
+                                        <th>Saldo</th>
+                                        <th>Mínimo</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:if="${#lists.isEmpty(produtosAbaixoMinimo)}">
+                                        <td colspan="4" class="text-center text-muted py-3">Nenhum produto abaixo do estoque mínimo.</td>
+                                    </tr>
+                                    <tr th:each="p : ${produtosAbaixoMinimo}">
+                                        <td th:text="'PRD-' + ${p.id}">PRD-001</td>
+                                        <td th:text="${p.nome}">Nome do Produto</td>
+                                        <td class="fw-bold text-danger" th:text="${p.estoque}">0</td>
+                                        <td th:text="${p.estoqueMinimo}">0</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="card-footer bg-white">
+                        <a th:href="@{/movimentacoes/novo}" class="text-decoration-none small">Registrar entrada →</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Gráfico de Movimentações por tipo -->
+            <div class="col-lg-5">
+                <div class="card shadow-sm h-100">
+                    <div class="card-header bg-white fw-bold">
+                        <i class="bi bi-bar-chart-fill text-primary me-1"></i> Movimentações por tipo
+                    </div>
+                    <div class="card-body d-flex flex-column justify-content-center align-items-center">
+                        <!-- Representação visual em barras simples com Bootstrap -->
+                        <div class="w-100 px-4 py-3">
+                            <div class="d-flex justify-content-around align-items-end" style="height: 180px;">
+                                <div class="text-center">
+                                    <div class="bg-primary rounded-top text-white fw-bold d-flex align-items-center justify-content-center" 
+                                         style="width: 50px; height: 120px;" th:text="${totalEntradas}">1</div>
+                                    <small class="d-block mt-2 text-muted">Entrada</small>
+                                </div>
+                                <div class="text-center">
+                                    <div class="bg-secondary rounded-top text-white fw-bold d-flex align-items-center justify-content-center" 
+                                         style="width: 50px; height: 80px;" th:text="${totalSaidas}">0</div>
+                                    <small class="d-block mt-2 text-muted">Saída</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <footer th:replace="~{fragments/layout :: rodape}"></footer>
+
 </body>
 </html>

@@ -7,6 +7,20 @@
 <main class="container py-4" style="max-width: 600px;">
     <h1 class="h3 mb-4" th:text="${movimentacao.id == null ? 'Registar Movimentação' : 'Editar Movimentação'}">Movimentação</h1>
 
+    <!-- ALERTA DE ERRO (Ex: Saldo insuficiente) -->
+    <div th:if="${erro}" class="alert alert-danger alert-dismissible fade show shadow-sm" role="alert">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+        <span th:text="${erro}">Mensagem de erro</span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
+    <!-- ALERTA DE SUCESSO -->
+    <div th:if="${mensagem}" class="alert alert-success alert-dismissible fade show shadow-sm" role="alert">
+        <i class="bi bi-check-circle-fill me-2"></i>
+        <span th:text="${mensagem}">Mensagem de sucesso</span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
     <div class="card shadow-sm p-4">
         <form th:action="@{/movimentacoes/salvar}" th:object="${movimentacao}" method="post">
             <input type="hidden" th:field="*{id}">

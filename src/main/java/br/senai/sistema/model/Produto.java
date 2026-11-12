@@ -72,13 +72,21 @@ public class Produto {
         this.localizacao = localizacao;
     }
 
-    // Métodos de compatibilidade com Movimentações
+    // Métodos de compatibilidade com Movimentações e Thymeleaf (p.quantidade e p.estoque)
     public Integer getQuantidade() {
         return saldo != null ? saldo : 0;
     }
 
     public void setQuantidade(Integer quantidade) {
         this.saldo = quantidade;
+    }
+
+    public Integer getEstoque() {
+        return saldo != null ? saldo : 0;
+    }
+
+    public void setEstoque(Integer estoque) {
+        this.saldo = estoque;
     }
 
     // Getters e Setters

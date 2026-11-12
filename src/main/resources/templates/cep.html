@@ -19,7 +19,7 @@
 
     <div th:if="${resultado != null}" class="card shadow-sm p-4" style="max-width: 500px;">
         <h5 class="mb-3">Resultado da Consulta</h5>
-        <p><strong>Logradouro:</strong> <span th:text="${resultado.logradouro}">-</span></p>
+        <p><strong>Logradouro:</strong> <span th:text="${resultado.rua}">-</span></p>
         <p><strong>Bairro:</strong> <span th:text="${resultado.bairro}">-</span></p>
         <p><strong>Cidade:</strong> <span th:text="${resultado.localidade}">-</span></p>
         <p><strong>Estado (UF):</strong> <span th:text="${resultado.uf}">-</span></p>

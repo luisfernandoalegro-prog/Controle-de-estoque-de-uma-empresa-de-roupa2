@@ -83,6 +83,7 @@ Formato: **Como** *[papel]*, **quero** *[acao]*, **para** *[beneficio]*.
 
 ---
 
+
 ## 4. Modelo de dados
 
 ```mermaid
@@ -99,7 +100,7 @@ classDiagram
         +String descricao
         +Double precoCusto
         +Double precoVenda
-        +Integer     estoqueMinimo
+        +Integer estoqueMinimo
     }
 
     class VariacaoProduto {
@@ -128,7 +129,9 @@ classDiagram
     Produto "1" --> "*" VariacaoProduto : contem
     VariacaoProduto "1" --> "*" Movimentacao : registra
     Usuario "1" --> "*" Movimentacao : realiza
-    ## Usuários de Teste
+```
+
+## Usuários de Teste
 
 | Usuário | E-mail / Login | Senha | Perfil | Permissões |
 | :--- | :--- | :--- | :--- | :--- |
@@ -160,7 +163,7 @@ Na pasta do projeto, execute `mvn spring-boot:run` e acesse `http://localhost:80
 Java 21 · Spring Boot 4 · Spring MVC · Thymeleaf · Bootstrap 5 · Spring Data JPA · H2 (desenvolvimento) · MySQL (produção) · Spring Security · Git/GitHub
 
 ## 7. Uso de inteligência artificial
-<!-- Registre aqui, de forma resumida, quando e como você usou ferramentas de IA de forma relevante no projeto. -->
+Para fins didaticos
 
 ## 8. Histórico de versões
 | Versão | Data | Descrição |
