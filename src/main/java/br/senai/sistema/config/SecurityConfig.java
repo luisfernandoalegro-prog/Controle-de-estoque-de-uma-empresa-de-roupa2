@@ -4,17 +4,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.security.autoconfigure.web.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
-/**
- * Configuração de segurança (login e permissões).
- *
- * Para LIGAR a segurança (Encontro 7/AVA 4), altere em application.yml:
- *   app: seguranca: ativa: true
- */
 @Configuration
 public class SecurityConfig {
 
@@ -29,13 +24,32 @@ public class SecurityConfig {
                     // Arquivos públicos e páginas que não exigem login
                     .requestMatchers("/css/**", "/js/**", "/img/**", "/login", "/diagnostico").permitAll()
                     .requestMatchers(PathRequest.toH2Console()).permitAll()
-                    
-                    // Rotas estritamente restritas ao perfil ADMIN (Excluir, Cadastrar, Editar e Gestão de Usuários)
-                    .requestMatchers("/usuarios/**", "/produtos/novo", "/produtos/salvar", "/produtos/excluir/**").hasRole("ADMIN")
-                    
-                    // Rotas partilhadas que Admin e Operador podem aceder (Listagens, Painel, Movimentações)
-                    .requestMatchers("/produtos", "/produtos/detalhes/**", "/painel", "/movimentacoes/**").hasAnyRole("ADMIN", "OPERADOR")
-                    
+
+                    // Rotas estritamente restritas ao perfil ADMIN (Produtos, Categorias e Usuários)
+                    .requestMatchers(
+                            "/usuarios/**",
+                            "/produtos/novo",
+                            "/produtos/salvar",
+                            "/produtos/editar/**",
+                            "/produtos/*/editar",
+                            "/produtos/excluir/**",
+                            "/categorias/novo",
+                            "/categorias/salvar",
+                            "/categorias/editar/**",
+                            "/categorias/*/editar",
+                            "/categorias/excluir/**"
+                    ).hasRole("ADMIN")
+
+                    // Rotas partilhadas que ADMIN e OPERADOR podem acessar (Listagens, Painel, Movimentações)
+                    .requestMatchers(
+                            "/",
+                            "/painel",
+                            "/produtos",
+                            "/produtos/detalhes/**",
+                            "/categorias",
+                            "/movimentacoes/**"
+                    ).hasAnyRole("ADMIN", "OPERADOR")
+
                     // Todo o resto exige estar logado
                     .anyRequest().authenticated());
         } else {
@@ -44,7 +58,6 @@ public class SecurityConfig {
         }
 
         http
-            // Página de login personalizada (templates/login.html)
             .formLogin(form -> form
                     .loginPage("/login")
                     .defaultSuccessUrl("/painel", true)
@@ -52,14 +65,12 @@ public class SecurityConfig {
             .logout(logout -> logout
                     .logoutSuccessUrl("/login?saiu")
                     .permitAll())
-            // O console do H2 usa recursos que precisam destas duas liberações
             .csrf(csrf -> csrf.ignoringRequestMatchers(PathRequest.toH2Console()))
             .headers(headers -> headers.frameOptions(frame -> frame.sameOrigin()));
 
         return http.build();
     }
 
-    /** Algoritmo usado para criptografar e conferir senhas. */
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
