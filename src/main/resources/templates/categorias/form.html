@@ -10,7 +10,7 @@
     <div class="card shadow-sm">
         <div class="card-body">
             <!-- A action relativa evita que o formulário force o localhost -->
-            <form th:action="@{/categorias/salvar}" th:object="${categoria}" method="post" novalidate>
+            <form th:action="@{/categorias/salvar}" th:object="${categoria}" method="post">
                 
                 <!-- Campo oculto fundamental para o Spring saber que é uma edição e não um novo registo -->
                 <input type="hidden" th:field="*{id}">
@@ -18,7 +18,7 @@
                 <div class="row g-3">
                     <div class="col-md-6">
                         <label class="form-label" for="nome">Nome *</label>
-                        <input type="text" class="form-control" id="nome" th:field="*{nome}" th:errorclass="is-invalid">
+                        <input type="text" class="form-control" id="nome" th:field="*{nome}" th:errorclass="is-invalid" required>
                         <div class="invalid-feedback" th:if="${#fields.hasErrors('nome')}" th:errors="*{nome}">Erro</div>
                     </div>
                     <div class="col-12">

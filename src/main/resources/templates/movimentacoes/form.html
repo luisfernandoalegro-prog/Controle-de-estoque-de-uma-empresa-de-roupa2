@@ -7,14 +7,12 @@
 <main class="container py-4" style="max-width: 600px;">
     <h1 class="h3 mb-4" th:text="${movimentacao.id == null ? 'Registar Movimentação' : 'Editar Movimentação'}">Movimentação</h1>
 
-    <!-- ALERTA DE ERRO (Ex: Saldo insuficiente) -->
     <div th:if="${erro}" class="alert alert-danger alert-dismissible fade show shadow-sm" role="alert">
         <i class="bi bi-exclamation-triangle-fill me-2"></i>
         <span th:text="${erro}">Mensagem de erro</span>
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
 
-    <!-- ALERTA DE SUCESSO -->
     <div th:if="${mensagem}" class="alert alert-success alert-dismissible fade show shadow-sm" role="alert">
         <i class="bi bi-check-circle-fill me-2"></i>
         <span th:text="${mensagem}">Mensagem de sucesso</span>
@@ -29,8 +27,8 @@
                 <label class="form-label">Tipo de Movimentação</label>
                 <select th:field="*{tipo}" class="form-select" required>
                     <option value="">Selecione...</option>
-                    <option th:each="t : ${T(br.senai.sistema.model.TipoMovimentacao).values()}" 
-                            th:value="${t}" 
+                    <option th:each="t : ${T(br.senai.sistema.model.TipoMovimentacao).values()}"
+                            th:value="${t}"
                             th:text="${t == T(br.senai.sistema.model.TipoMovimentacao).ENTRADA ? 'Entrada' : 'Saída'}">
                     </option>
                 </select>
@@ -47,7 +45,8 @@
 
             <div class="mb-3">
                 <label class="form-label">Quantidade</label>
-                <input type="number" th:field="*{quantidade}" class="form-control" min="1" required>
+                <input type="number" step="1" th:field="*{quantidade}" class="form-control" min="1" required>
+                <div class="text-danger small mt-1" th:if="${#fields.hasErrors('quantidade')}" th:errors="*{quantidade}"></div>
             </div>
 
             <div class="mb-3">

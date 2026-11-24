@@ -8,7 +8,7 @@
 | **Aluno(a)** | Luis fernando Langame Alegro |
 | **Turma** |TEC-N-001788/2026 |
 | **Opcao escolhida** | Controle de Estoque |
-| **Versao atual** | 0.1.0 |
+| **Versao atual** | 1.1.0 |
 
 ---
 

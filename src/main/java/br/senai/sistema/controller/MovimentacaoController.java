@@ -42,7 +42,6 @@ public class MovimentacaoController {
         return "movimentacoes/form";
     }
 
-    // Suporta rotas de edição por /movimentacoes/editar/{id} ou /movimentacoes/{id}/editar
     @GetMapping({"/editar/{id}", "/{id}/editar"})
     public String editar(@PathVariable Long id, Model model, RedirectAttributes atributos) {
         return movimentacaoService.buscarPorId(id)
@@ -69,7 +68,6 @@ public class MovimentacaoController {
             atributos.addFlashAttribute("mensagem", "Movimentação salva com sucesso.");
             return "redirect:/movimentacoes";
         } catch (Exception e) {
-            // Mantém na mesma página do formulário e exibe a mensagem de erro exata (ex: saldo insuficiente)
             model.addAttribute("erro", e.getMessage());
             model.addAttribute("produtos", produtoService.listarTodos());
             return "movimentacoes/form";
@@ -80,7 +78,7 @@ public class MovimentacaoController {
     public String excluir(@PathVariable Long id, RedirectAttributes atributos) {
         try {
             movimentacaoService.excluir(id);
-            atributos.addFlashAttribute("mensagem", "Movimentação excluída e stock revertido com sucesso.");
+            atributos.addFlashAttribute("mensagem", "Movimentação excluída e estoque revertido com sucesso.");
         } catch (Exception e) {
             atributos.addFlashAttribute("erro", e.getMessage());
         }

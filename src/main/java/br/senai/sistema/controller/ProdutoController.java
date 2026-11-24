@@ -50,6 +50,10 @@ public class ProdutoController {
         }
         try {
             produtoService.salvar(produto);
+        } catch (IllegalArgumentException e) {
+            model.addAttribute("erro", e.getMessage());
+            model.addAttribute("categorias", categoriaService.listarTodas());
+            return "produtos/form";
         } catch (DataIntegrityViolationException e) {
             resultado.rejectValue("codigo", "duplicado", "Já existe um registo com este código.");
             model.addAttribute("categorias", categoriaService.listarTodas());

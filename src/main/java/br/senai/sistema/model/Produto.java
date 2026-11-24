@@ -3,6 +3,7 @@ package br.senai.sistema.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -26,15 +27,19 @@ public class Produto {
     @NotBlank(message = "A unidade é obrigatória")
     private String unidade;
 
+    @PositiveOrZero(message = "O preço de custo não pode ser negativo")
     private BigDecimal precoCusto;
 
     @NotNull(message = "O preço de venda é obrigatório")
+    @PositiveOrZero(message = "O preço de venda não pode ser negativo")
     private BigDecimal precoVenda;
 
     @NotNull(message = "O estoque mínimo é obrigatório")
+    @PositiveOrZero(message = "O estoque mínimo não pode ser negativo")
     private Integer estoqueMinimo;
 
     @NotNull(message = "O saldo é obrigatório")
+    @PositiveOrZero(message = "O saldo não pode ser negativo")
     private Integer saldo;
 
     private String localizacao;
@@ -72,12 +77,19 @@ public class Produto {
         this.localizacao = localizacao;
     }
 
+    private void validarNaoNegativo(Integer valor, String campo) {
+        if (valor != null && valor < 0) {
+            throw new IllegalArgumentException(campo + " não pode ser negativo");
+        }
+    }
+
     // Métodos de compatibilidade com Movimentações e Thymeleaf (p.quantidade e p.estoque)
     public Integer getQuantidade() {
         return saldo != null ? saldo : 0;
     }
 
     public void setQuantidade(Integer quantidade) {
+        validarNaoNegativo(quantidade, "A quantidade");
         this.saldo = quantidade;
     }
 
@@ -86,6 +98,7 @@ public class Produto {
     }
 
     public void setEstoque(Integer estoque) {
+        validarNaoNegativo(estoque, "O estoque");
         this.saldo = estoque;
     }
 
@@ -103,16 +116,32 @@ public class Produto {
     public void setUnidade(String unidade) { this.unidade = unidade; }
 
     public BigDecimal getPrecoCusto() { return precoCusto; }
-    public void setPrecoCusto(BigDecimal precoCusto) { this.precoCusto = precoCusto; }
+    public void setPrecoCusto(BigDecimal precoCusto) {
+        if (precoCusto != null && precoCusto.compareTo(BigDecimal.ZERO) < 0) {
+            throw new IllegalArgumentException("O preço de custo não pode ser negativo");
+        }
+        this.precoCusto = precoCusto;
+    }
 
     public BigDecimal getPrecoVenda() { return precoVenda; }
-    public void setPrecoVenda(BigDecimal precoVenda) { this.precoVenda = precoVenda; }
+    public void setPrecoVenda(BigDecimal precoVenda) {
+        if (precoVenda != null && precoVenda.compareTo(BigDecimal.ZERO) < 0) {
+            throw new IllegalArgumentException("O preço de venda não pode ser negativo");
+        }
+        this.precoVenda = precoVenda;
+    }
 
     public Integer getEstoqueMinimo() { return estoqueMinimo; }
-    public void setEstoqueMinimo(Integer estoqueMinimo) { this.estoqueMinimo = estoqueMinimo; }
+    public void setEstoqueMinimo(Integer estoqueMinimo) {
+        validarNaoNegativo(estoqueMinimo, "O estoque mínimo");
+        this.estoqueMinimo = estoqueMinimo;
+    }
 
     public Integer getSaldo() { return saldo; }
-    public void setSaldo(Integer saldo) { this.saldo = saldo; }
+    public void setSaldo(Integer saldo) {
+        validarNaoNegativo(saldo, "O saldo");
+        this.saldo = saldo;
+    }
 
     public String getLocalizacao() { return localizacao; }
     public void setLocalizacao(String localizacao) { this.localizacao = localizacao; }

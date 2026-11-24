@@ -48,7 +48,12 @@ public class Movimentacao {
     public void setProduto(Produto produto) { this.produto = produto; }
 
     public Integer getQuantidade() { return quantidade; }
-    public void setQuantidade(Integer quantidade) { this.quantidade = quantidade; }
+    public void setQuantidade(Integer quantidade) {
+        if (quantidade != null && quantidade < 1) {
+            throw new IllegalArgumentException("A quantidade deve ser no mínimo 1");
+        }
+        this.quantidade = quantidade;
+    }
 
     public String getObservacao() { return observacao; }
     public void setObservacao(String observacao) { this.observacao = observacao; }
