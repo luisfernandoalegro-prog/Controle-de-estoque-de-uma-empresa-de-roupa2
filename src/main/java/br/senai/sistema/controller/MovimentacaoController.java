@@ -83,5 +83,6 @@ public class MovimentacaoController {
             atributos.addFlashAttribute("erro", e.getMessage());
         }
         return "redirect:/movimentacoes";
+        
     }
 }
