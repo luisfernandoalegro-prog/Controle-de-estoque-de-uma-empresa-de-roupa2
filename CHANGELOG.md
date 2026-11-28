@@ -11,5 +11,5 @@ Versões no formato MAIOR.MENOR.CORREÇÃO (versionamento semântico).
 ### Planejado para a próxima versão
 - #5 Título de um chamado que continua aberto (prioridade).
 
-## [1.0.0] - 11/11/2026
+## [1.1.0] - 11/11/2026
 - Primeira versão estável: nível essencial completo.
