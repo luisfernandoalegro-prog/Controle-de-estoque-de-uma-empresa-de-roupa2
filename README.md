@@ -170,6 +170,7 @@ Para fins didaticos
 |---|---|---|
 | 0.1.0 | | Projeto inicial criado a partir do repositório modelo |
 
+| 1.1.0 | 25/11/2026 | Manutenção: chamados #3 e #4 resolvidos (veja o CHANGELOG.md) |
 ## 9. Funcionalidades e telas
 
 ### Funcionalidades
@@ -210,3 +211,15 @@ Para fins didaticos
 - [x] Repositório no GitHub com commits frequentes
 - [x] README com a visão do projeto, como executar, usuários de teste, funcionalidades e telas
 - [x] Quadro Kanban atualizado
+
+## 11. Indicadores de suporte (versão 1.1.0)
+
+| Indicador | Valor |
+|---|---|
+| Chamados registrados | 4 |
+| Chamados resolvidos | 2 |
+| Taxa de resolução | 50% |
+| Tempo médio de resolução | 7 dias |
+| Chamados por tipo | 2 corretiva, 2 perfectivas|
+
+**O que vou fazer diferente na próxima versão:** testar o limite de cada regra antes de publicar.
